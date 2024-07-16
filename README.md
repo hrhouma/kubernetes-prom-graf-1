@@ -243,6 +243,37 @@ Pour accéder au Dashboard Kubernetes, vous aurez besoin d'un token d'authentifi
 
 Ce token est ce que vous utiliserez pour vous connecter au Dashboard Kubernetes. Veillez à copier le token qui apparaîtra dans la sortie de la commande `describe secret` sous la clé `token`.
 
+# Troubleshooting 4
+
+- Erreur due à la version de l'API utilisée par votre commande `kubectl` ou par votre cluster.
+- Pour résoudre ce problème, vérifions la disponibilité de l'API pour créer un ClusterRoleBinding, puis essayons à nouveau la commande avec la bonne API.
+
+### Vérifier les versions disponibles de l'API RBAC
+Pour commencer, vérifions les versions de l'API disponibles pour le RBAC :
+
+```bash
+kubectl api-versions | grep rbac
+```
+
+Vous devriez voir une liste des versions disponibles comme `rbac.authorization.k8s.io/v1`.
+
+### Créer le ClusterRoleBinding avec la bonne version de l'API
+Si la version `rbac.authorization.k8s.io/v1` est disponible, utilisons cette version spécifiquement pour créer le ClusterRoleBinding. Voici comment vous pouvez le faire :
+
+```bash
+kubectl create clusterrolebinding dashboard-admin-binding --clusterrole=cluster-admin --serviceaccount=kubernetes-dashboard:dashboard-admin
+```
+
+Cette commande ne spécifie pas explicitement la version de l'API dans la commande elle-même, car `kubectl` devrait automatiquement utiliser la bonne version basée sur les versions disponibles de l'API.
+
+Si cette commande réussit, vous devriez pouvoir continuer et récupérer le token comme suit :
+
+```bash
+kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get serviceaccount dashboard-admin -o=jsonpath='{.secrets[0].name}')
+```
+
+Cela devrait vous donner le token nécessaire pour vous connecter au Dashboard Kubernetes. Assurez-vous de copier le token depuis la section `token` affichée dans les détails du secret.
+
 ### Lancer le Proxy Kubernetes
 
 4. **Lancer le proxy** :
