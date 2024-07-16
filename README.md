@@ -80,7 +80,7 @@ Suivez ces étapes dans l'interface utilisateur de Grafana pour configurer Prome
 Cette approche vous permet de mettre en œuvre un système de surveillance de votre cluster Kubernetes en utilisant les fichiers spécifiques que vous avez fournis, plutôt que de dépendre de clones de dépôts externes.
 
 
-# Troubleshooting
+# Troubleshooting 1
 
 
 Pour établir un environnement Kubernetes complet avec Grafana, Prometheus, et le Kubernetes Dashboard dans leurs namespaces appropriés, voici un tutoriel complet étape par étape :
@@ -173,3 +173,40 @@ Pour établir un environnement Kubernetes complet avec Grafana, Prometheus, et l
 ### Conclusion
 
 En suivant ces étapes, vous aurez configuré un environnement Kubernetes avec Grafana, Prometheus, et le Kubernetes Dashboard, chacun dans leur propre namespace, assurant une séparation et une gestion claire des ressources.
+
+# Troubleshooting 2
+
+### Étape 1 : Vérification du déploiement du Kubernetes Dashboard
+
+1. **Vérifiez si le Dashboard est installé** :
+   ```bash
+   kubectl get all -n kubernetes-dashboard
+   ```
+
+2. **Si rien n'est trouvé**, vous devrez installer ou redéployer le Kubernetes Dashboard. Vous pouvez le faire en appliquant un fichier YAML officiel pour le déploiement du dashboard. Voici comment vous pouvez le déployer :
+
+   ```bash
+   kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.5.0/aio/deploy/recommended.yaml
+   ```
+
+### Étape 2 : Accéder au Kubernetes Dashboard
+
+Après avoir assuré que le Dashboard est déployé, réessayez d'accéder via le proxy :
+
+1. **Lancer le proxy** :
+   ```bash
+   kubectl proxy
+   ```
+
+2. **Accéder au Dashboard** :
+   Utilisez l'URL correcte pour le Dashboard, en vous assurant que le service est disponible :
+
+   ```
+   http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+   ```
+
+### Étape 3 : Vérification des permissions
+
+Assurez-vous également que le compte de service ou les rôles associés ont les permissions nécessaires pour accéder aux ressources dans le cluster. Si des problèmes de permissions sont présents, ils doivent être résolus pour permettre un accès complet aux fonctionnalités du Dashboard.
+
+Si le problème persiste après ces vérifications, cela peut indiquer un problème plus profond avec la configuration de votre cluster ou avec les fichiers YAML spécifiques que vous utilisez.
