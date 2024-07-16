@@ -287,3 +287,8 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 ```
 
 Utilisez le token que vous avez récupéré pour vous connecter au Dashboard. Assurez-vous de choisir le mode d'authentification "Token" et de coller le token dans le champ prévu.
+
+- https://stackoverflow.com/questions/46664104/how-to-sign-in-kubernetes-dashboard
+- https://janrock.medium.com/kubernetes-dashboard-token-issue-solved-6df37893bef6
+- https://github.com/kubernetes/dashboard/issues/8767
+
