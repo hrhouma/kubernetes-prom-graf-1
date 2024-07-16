@@ -231,7 +231,7 @@ Pour accéder au Dashboard Kubernetes, vous aurez besoin d'un token d'authentifi
 
 2. **Créer un ClusterRoleBinding pour donner des droits administratifs à ce compte** :
    ```bash
-   kubectl create clusterrolebinding dashboard-admin --clusterrole=cluster-admin --serviceaccount=kubernetes-dashboard:dashboard-admin
+   kubectl create clusterrolebinding dashboard-admin-binding --clusterrole=cluster-admin --serviceaccount=kubernetes-dashboard:dashboard-admin
    ```
 
 ### Récupération du Token d'Authentification
