@@ -78,3 +78,98 @@ Suivez ces étapes dans l'interface utilisateur de Grafana pour configurer Prome
 6. Cliquez sur **Save & Test**.
 
 Cette approche vous permet de mettre en œuvre un système de surveillance de votre cluster Kubernetes en utilisant les fichiers spécifiques que vous avez fournis, plutôt que de dépendre de clones de dépôts externes.
+
+
+# Troubleshooting
+
+
+Pour établir un environnement Kubernetes complet avec Grafana, Prometheus, et le Kubernetes Dashboard dans leurs namespaces appropriés, voici un tutoriel complet étape par étape :
+
+### Étape 1 : Préparation de l'Environnement
+
+1. **Démarrage de Minikube** :
+   Minikube est un outil qui permet de lancer un cluster Kubernetes localement. Lancez Minikube si ce n'est pas déjà fait :
+   ```bash
+   minikube start
+   ```
+
+### Étape 2 : Création des Namespaces
+
+2. **Créer les Namespaces Nécessaires** :
+   ```bash
+   kubectl create namespace monitoring
+   kubectl create namespace kubernetes-dashboard
+   ```
+
+### Étape 3 : Application des Fichiers de Configuration
+
+3. **Appliquer les Fichiers YAML** :
+   Appliquez tous les fichiers de configuration nécessaires en utilisant `kubectl apply`. Assurez-vous que chaque fichier est appliqué dans le bon namespace, soit en spécifiant le namespace directement dans le fichier YAML sous `metadata.namespace`, soit en utilisant l'option `-n [namespace]` dans la commande.
+   
+   ```bash
+   # Ressources pour kube-state-metrics
+   kubectl apply -f kube-state-metrics-service-account.yaml -n monitoring
+   kubectl apply -f kube-state-metrics-cluster-role.yaml -n monitoring
+   kubectl apply -f kube-state-metrics-cluster-role-binding.yaml -n monitoring
+   kubectl apply -f kube-state-metrics-deployment.yaml -n monitoring
+   kubectl apply -f kube-state-metrics-service.yaml -n monitoring
+   
+   # Ressources pour Grafana
+   kubectl apply -f grafana-configmap.yaml -n monitoring
+   kubectl apply -f grafana-deployment.yaml -n monitoring
+   kubectl apply -f grafana-service.yaml -n monitoring
+   
+   # Ressources pour Prometheus
+   kubectl apply -f metrics-server-prometheus.deployment.yml -n monitoring
+   
+   # Ressources pour le Kubernetes Dashboard
+   kubectl apply -f Web-UI-dashboard-adminuser.yml -n kubernetes-dashboard
+   kubectl apply -f Web-UI-newDeploy.yml -n kubernetes-dashboard
+   ```
+
+### Étape 4 : Vérification de l'État des Déploiements
+
+4. **Vérifier les Pods et Services** :
+   ```bash
+   kubectl get pods --all-namespaces
+   kubectl get services --all-namespaces
+   ```
+
+### Étape 5 : Configuration de Grafana
+
+5. **Accès à Grafana** :
+   Utilisez Minikube pour obtenir l'URL d'accès à Grafana :
+   ```bash
+   minikube service grafana --url -n monitoring
+   ```
+
+### Étape 6 : Configuration du Dashboard Kubernetes
+
+6. **Configurer l'Accès au Kubernetes Dashboard** :
+   Lancez le proxy Kubernetes pour accéder au Dashboard :
+   ```bash
+   kubectl proxy
+   ```
+
+   Puis, accédez à l'URL suivante dans votre navigateur :
+   ```
+   http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+   ```
+
+### Étape 7 : Configuration de Prometheus comme Source de Données dans Grafana
+
+7. **Configurer Prometheus dans Grafana** :
+   Une fois dans Grafana, ajoutez Prometheus comme source de données :
+   - Connectez-vous à Grafana.
+   - Allez dans **Configuration** -> **Data Sources**.
+   - Cliquez sur **Add data source**.
+   - Sélectionnez **Prometheus**.
+   - Configurez l'URL comme suit :
+     ```
+     http://prometheus:9090
+     ```
+   - Cliquez sur **Save & Test**.
+
+### Conclusion
+
+En suivant ces étapes, vous aurez configuré un environnement Kubernetes avec Grafana, Prometheus, et le Kubernetes Dashboard, chacun dans leur propre namespace, assurant une séparation et une gestion claire des ressources.
