@@ -1,4 +1,5 @@
 # kubernetes-prom-graf-1
+![image](https://github.com/user-attachments/assets/2a294419-f724-47ff-a4f6-3ad97f44a3f3)
 
 ### Étape 1 : Démarrage de Minikube
 
