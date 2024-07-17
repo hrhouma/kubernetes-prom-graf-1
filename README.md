@@ -317,10 +317,8 @@ Utilisez le token que vous avez récupéré pour vous connecter au Dashboard. As
    16  cd Desktop/
    17  ls
    18  cd install-docker/
-   19  curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
    20  sudo curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
    21  sudo install minikube-linux-amd64 /usr/local/bin/minikube
-   22  wget https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubectl
    23  sudo wget https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubectl
    24  sudo chmod +x kubectl
    25  sudo mv kubectl /usr/local/bin/
@@ -350,16 +348,12 @@ Utilisez le token que vous avez récupéré pour vous connecter au Dashboard. As
    49  kubectl get namespaces
    50  kubectl get secrets -n kube-system
    51  kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')
-   52  kubectl proxy
-   53  kubectl apply -f Web-UI-dashboard-adminuser.yml
-   54  cat Web-UI-dashboard-adminuser.yml
-   55  cat Web-UI-newDeploy.yml
-   56  kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')
-   57  kubectl get secrets -n kube-system
+  
    58  kubectl get services -n kubernetes-dashboard
-   59  cat Web-UI-dashboard-adminuser.yml -n  kubernetes-dashboard
    60  kubectl apply -f Web-UI-dashboard-adminuser.yml -n  kubernetes-dashboard
    61  kubectl get services -n kubernetes-dashboard
+
+   
    62  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
    63  kubectl get services -n kubernetes-dashboard
    64  kubectl proxy
@@ -370,10 +364,13 @@ Utilisez le token que vous avez récupéré pour vous connecter au Dashboard. As
    69  kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')
    70  kubectl get secrets -n kubernetes-dashboard
    71  kubectl get serviceaccounts -n kubernetes-dashboard
+
+   
    72  nano admin-user-token.yaml
    73  kubectl apply -f admin-user-token.yaml
    74  kubectl get secrets -n kubernetes-dashboard
    75  kubectl describe secret admin-user-token -n kubernetes-dashboard
+   
    76  echo '[base64-encoded-token]' | base64 --decode
    77  echo '[eyJhbGciOiJSUzI1NiIsImtpZCI6IjBnRV9RUGRTejdCTHF6WDlEMUh4NEJQSWJLY0F2T0xGVjBSUWRQSzlLdGcifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhZG1pbi11c2VyLXRva2VuIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImFkbWluLXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIyNmE2MjAxYS1iMjM2LTQ3NTgtYTE1Ni00ZGJkZjIxM2ViY2QiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZXJuZXRlcy1kYXNoYm9hcmQ6YWRtaW4tdXNlciJ9.RyewRhVAHPC8CIO4pdAAbi0D50hYh_sOA8WbtxW03K_gtqjwcuAoDSg9emaPGA5FlmYqmna1Q0AzCSvNak0_MM0zBA2TmmQtMcF3C_IRHIKgl8umu6WY3XH5z9Nm9BnktJ48gHMibgjFqWdICJ2FqR1_nUrwCggdicjjaGY_4-wrrRope-df4HzXLRjvQ5TRGKctAO29XyKlRcqWjlJbunFgf8VNgWaJDBL2lhaMQJW83I_1hEQt2dZX1IuR-SwtN-mJXEyVYxbudKGYPtsPw6U7dJ9B3p03daN7xqwMC65xvD7Pz_dJR3PPYRPdrjxe7BAu3pJ7w11YRpKekxS2gw]' | base64 --decode
    78  echo 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjBnRV9RUGRTejdCTHF6WDlEMUh4NEJQSWJLY0F2T0xGVjBSUWRQSzlLdGcifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhZG1pbi11c2VyLXRva2VuIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImFkbWluLXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIyNmE2MjAxYS1iMjM2LTQ3NTgtYTE1Ni00ZGJkZjIxM2ViY2QiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZXJuZXRlcy1kYXNoYm9hcmQ6YWRtaW4tdXNlciJ9.RyewRhVAHPC8CIO4pdAAbi0D50hYh_sOA8WbtxW03K_gtqjwcuAoDSg9emaPGA5FlmYqmna1Q0AzCSvNak0_MM0zBA2TmmQtMcF3C_IRHIKgl8umu6WY3XH5z9Nm9BnktJ48gHMibgjFqWdICJ2FqR1_nUrwCggdicjjaGY_4-wrrRope-df4HzXLRjvQ5TRGKctAO29XyKlRcqWjlJbunFgf8VNgWaJDBL2lhaMQJW83I_1hEQt2dZX1IuR-SwtN-mJXEyVYxbudKGYPtsPw6U7dJ9B3p03daN7xqwMC65xvD7Pz_dJR3PPYRPdrjxe7BAu3pJ7w11YRpKekxS2gw' | base64 --decode
