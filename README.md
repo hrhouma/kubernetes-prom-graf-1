@@ -105,6 +105,8 @@ Trouvez l'adresse IP avec `ip a` et cherchez l'interface correspondant à l'adap
    sudo chmod +x kubectl
    sudo mv kubectl /usr/local/bin/
 
+   sudo usermod -aG docker $USER && newgrp docker
+
    # Démarrer Minikube en tant qu'utilisateur 'eleve' (sans sudo)
    minikube start --driver=docker
    ```
