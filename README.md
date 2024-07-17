@@ -386,3 +386,56 @@ Utilisez le token que vous avez récupéré pour vous connecter au Dashboard. As
    85  minikube service grafana --url -n monitoring
    86  history
 
+
+
+The output shows that the `admin-user` service account has been created in the `kubernetes-dashboard` namespace, but it lists "0" under the SECRETS column, indicating that no secrets (and consequently, no tokens) are associated with it. This is unusual as Kubernetes normally automatically creates a secret containing a token when a new service account is created.
+
+### Steps to Manually Create a Token for the `admin-user` Service Account:
+
+Since the system hasn't generated a token automatically, you'll need to manually create one.
+
+1. **Create a Token Manually**:
+   You can explicitly create a token for the `admin-user` by applying a YAML configuration for a secret of type `kubernetes.io/service-account-token`. Here’s how you can do it:
+
+   Create a YAML file named `admin-user-token.yaml` with the following content:
+   ```yaml
+   apiVersion: v1
+   kind: Secret
+   metadata:
+     name: admin-user-token
+     annotations:
+       kubernetes.io/service-account.name: "admin-user"
+     namespace: kubernetes-dashboard
+   type: kubernetes.io/service-account-token
+   ```
+
+2. **Apply the YAML**:
+   Apply this configuration to create the secret:
+   ```bash
+   kubectl apply -f admin-user-token.yaml
+   ```
+
+3. **Verify the Secret is Created**:
+   After applying the YAML, check the secrets again to make sure the new token has been created:
+   ```bash
+   kubectl get secrets -n kubernetes-dashboard
+   ```
+
+4. **Describe the Secret to Retrieve the Token**:
+   Once confirmed that the secret is created, describe it to retrieve the token:
+   ```bash
+   kubectl describe secret admin-user-token -n kubernetes-dashboard
+   ```
+
+   Look for the `token` entry under the `Data` section. You'll need to decode this base64-encoded token to use it for dashboard login.
+
+### Decode the Token
+
+Tokens stored in Kubernetes secrets are base64 encoded. Once you have the token, you can decode it from your command line using:
+```bash
+echo '[base64-encoded-token]' | base64 --decode
+```
+
+Replace `[base64-encoded-token]` with the actual encoded token string you retrieved. This decoded token can then be used to log into the Kubernetes Dashboard.
+
+Let me know if this resolves the issue or if you need further assistance!
