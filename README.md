@@ -293,3 +293,96 @@ Utilisez le token que vous avez récupéré pour vous connecter au Dashboard. As
 - https://janrock.medium.com/kubernetes-dashboard-token-issue-solved-6df37893bef6
 - https://github.com/kubernetes/dashboard/issues/8767
 
+
+
+
+
+
+ history
+    1  # Mettre à jour les paquets et installer les prérequis
+    2  sudo apt-get update
+    3  sudo apt-get install -y ca-certificates curl gnupg lsb-release
+    4  # Ajouter la clé GPG officielle de Docker
+    5  sudo mkdir -p /etc/apt/keyrings
+    6  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    7  # Ajouter le dépôt Docker aux sources APT
+    8  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    9  # Installer Docker Engine, CLI et Containerd
+   10  sudo apt-get update
+   11  sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+   12  # Ajouter l'utilisateur 'eleve' au groupe Docker
+   13  sudo usermod -aG docker eleve
+   14  sudo apt update
+   15  sudo apt install -y curl wget apt-transport-https
+   16  cd Desktop/
+   17  ls
+   18  cd install-docker/
+   19  curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+   20  sudo curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+   21  sudo install minikube-linux-amd64 /usr/local/bin/minikube
+   22  wget https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubectl
+   23  sudo wget https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubectl
+   24  sudo chmod +x kubectl
+   25  sudo mv kubectl /usr/local/bin/
+   26  sudo minikube start --driver=docker
+   27  minikube start --driver=docker
+   28  kubectl cluster-info
+   29  minikube status
+   30  cd ..
+   31  minikube status
+   32  git clone https://github.com/hrhouma/kubernetes-prom-graf-1.git
+   33  cd kubernetes-prom-graf-1/
+   34  kubectl create namespace monitoring
+   35  kubectl create namespace kubernetes-dashboard
+   36  kubectl apply -f kube-state-metrics-service-account.yaml
+   37  kubectl apply -f kube-state-metrics-cluster-role.yaml
+   38  kubectl apply -f kube-state-metrics-cluster-role-binding.yaml
+   39  kubectl apply -f kube-state-metrics-deployment.yaml
+   40  kubectl apply -f kube-state-metrics-service.yaml
+   41  kubectl apply -f grafana-configmap.yaml
+   42  kubectl apply -f grafana-deployment.yaml
+   43  kubectl apply -f grafana-service.yaml
+   44  kubectl apply -f metrics-server-prometheus.deployment.yml
+   45  kubectl apply -f Web-UI-dashboard-adminuser.yml
+   46  kubectl apply -f Web-UI-newDeploy.yml
+   47  kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')
+   48  kubectl get secrets
+   49  kubectl get namespaces
+   50  kubectl get secrets -n kube-system
+   51  kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')
+   52  kubectl proxy
+   53  kubectl apply -f Web-UI-dashboard-adminuser.yml
+   54  cat Web-UI-dashboard-adminuser.yml
+   55  cat Web-UI-newDeploy.yml
+   56  kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')
+   57  kubectl get secrets -n kube-system
+   58  kubectl get services -n kubernetes-dashboard
+   59  cat Web-UI-dashboard-adminuser.yml -n  kubernetes-dashboard
+   60  kubectl apply -f Web-UI-dashboard-adminuser.yml -n  kubernetes-dashboard
+   61  kubectl get services -n kubernetes-dashboard
+   62  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+   63  kubectl get services -n kubernetes-dashboard
+   64  kubectl proxy
+   65  kubectl get secrets -n kubernetes-dashboard
+   66  kubectl describe secret kubernetes-dashboard-certs -n kubernetes-dashboard
+   67  kubectl describe secret kubernetes-dashboard -n kubernetes-dashboard
+   68  kubectl get secrets -n kubernetes-dashboard -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='admin-user')].metadata.name}"
+   69  kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')
+   70  kubectl get secrets -n kubernetes-dashboard
+   71  kubectl get serviceaccounts -n kubernetes-dashboard
+   72  nano admin-user-token.yaml
+   73  kubectl apply -f admin-user-token.yaml
+   74  kubectl get secrets -n kubernetes-dashboard
+   75  kubectl describe secret admin-user-token -n kubernetes-dashboard
+   76  echo '[base64-encoded-token]' | base64 --decode
+   77  echo '[eyJhbGciOiJSUzI1NiIsImtpZCI6IjBnRV9RUGRTejdCTHF6WDlEMUh4NEJQSWJLY0F2T0xGVjBSUWRQSzlLdGcifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhZG1pbi11c2VyLXRva2VuIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImFkbWluLXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIyNmE2MjAxYS1iMjM2LTQ3NTgtYTE1Ni00ZGJkZjIxM2ViY2QiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZXJuZXRlcy1kYXNoYm9hcmQ6YWRtaW4tdXNlciJ9.RyewRhVAHPC8CIO4pdAAbi0D50hYh_sOA8WbtxW03K_gtqjwcuAoDSg9emaPGA5FlmYqmna1Q0AzCSvNak0_MM0zBA2TmmQtMcF3C_IRHIKgl8umu6WY3XH5z9Nm9BnktJ48gHMibgjFqWdICJ2FqR1_nUrwCggdicjjaGY_4-wrrRope-df4HzXLRjvQ5TRGKctAO29XyKlRcqWjlJbunFgf8VNgWaJDBL2lhaMQJW83I_1hEQt2dZX1IuR-SwtN-mJXEyVYxbudKGYPtsPw6U7dJ9B3p03daN7xqwMC65xvD7Pz_dJR3PPYRPdrjxe7BAu3pJ7w11YRpKekxS2gw]' | base64 --decode
+   78  echo 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjBnRV9RUGRTejdCTHF6WDlEMUh4NEJQSWJLY0F2T0xGVjBSUWRQSzlLdGcifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhZG1pbi11c2VyLXRva2VuIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImFkbWluLXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIyNmE2MjAxYS1iMjM2LTQ3NTgtYTE1Ni00ZGJkZjIxM2ViY2QiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZXJuZXRlcy1kYXNoYm9hcmQ6YWRtaW4tdXNlciJ9.RyewRhVAHPC8CIO4pdAAbi0D50hYh_sOA8WbtxW03K_gtqjwcuAoDSg9emaPGA5FlmYqmna1Q0AzCSvNak0_MM0zBA2TmmQtMcF3C_IRHIKgl8umu6WY3XH5z9Nm9BnktJ48gHMibgjFqWdICJ2FqR1_nUrwCggdicjjaGY_4-wrrRope-df4HzXLRjvQ5TRGKctAO29XyKlRcqWjlJbunFgf8VNgWaJDBL2lhaMQJW83I_1hEQt2dZX1IuR-SwtN-mJXEyVYxbudKGYPtsPw6U7dJ9B3p03daN7xqwMC65xvD7Pz_dJR3PPYRPdrjxe7BAu3pJ7w11YRpKekxS2gw' | base64 --decode
+   79  echo 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjBnRV9RUGRTejdCTHF6WDlEMUh4NEJQSWJLY0F2T0xGVjBSUWRQSzlLdGcifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhZG1pbi11c2VyLXRva2VuIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImFkbWluLXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIyNmE2MjAxYS1iMjM2LTQ3NTgtYTE1Ni00ZGJkZjIxM2ViY2QiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZXJuZXRlcy1kYXNoYm9hcmQ6YWRtaW4tdXNlciJ9.RyewRhVAHPC8CIO4pdAAbi0D50hYh_sOA8WbtxW03K_gtqjwcuAoDSg9emaPGA5FlmYqmna1Q0AzCSvNak0_MM0zBA2TmmQtMcF3C_IRHIKgl8umu6WY3XH5z9Nm9BnktJ48gHMibgjFqWdICJ2FqR1_nUrwCggdicjjaGY_4-wrrRope-df4HzXLRjvQ5TRGKctAO29XyKlRcqWjlJbunFgf8VNgWaJDBL2lhaMQJW83I_1hEQt2dZX1IuR-SwtN-mJXEyVYxbudKGYPtsPw6U7dJ9B3p03daN7xqwMC65xvD7Pz_dJR3PPYRPdrjxe7BAu3pJ7w11YRpKekxS2gw' | cut -d"." -f2 | base64 -d
+   80  echo 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjBnRV9RUGRTejdCTHF6WDlEMUh4NEJQSWJLY0F2T0xGVjBSUWRQSzlLdGcifQ' | base64 --decode
+   81  echo 'eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhZG1pbi11c2VyLXRva2VuIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImFkbWluLXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIyNmE2MjAxYS1iMjM2LTQ3NTgtYTE1Ni00ZGJkZjIxM2ViY2QiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZXJuZXRlcy1kYXNoYm9hcmQ6YWRtaW4tdXNlciJ9' | base64 --decode
+   82  kubectl proxy
+   83  kubectl proxy --address='0.0.0.0' --accept-hosts='^*$'
+   84  minikube service grafana --url
+   85  minikube service grafana --url -n monitoring
+   86  history
+
