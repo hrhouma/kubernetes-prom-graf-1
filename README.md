@@ -441,16 +441,130 @@ sudo usermod -aG docker $USER && newgrp docker
 minikube start --driver=docker
 kubectl cluster-info
 minikube status
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+git clone https://github.com/hrhouma/kubernetes-prom-graf-1.git
+cd kubernetes-prom-graf-1/
+kubectl create namespace monitoring
+kubectl create namespace kubernetes-dashboard
+kubectl apply -f kube-state-metrics-service-account.yaml
+kubectl apply -f kube-state-metrics-cluster-role.yaml
+kubectl apply -f kube-state-metrics-cluster-role-binding.yaml
+kubectl apply -f kube-state-metrics-deployment.yaml
+kubectl apply -f kube-state-metrics-service.yaml
+kubectl apply -f grafana-configmap.yaml
+kubectl apply -f grafana-deployment.yaml
+kubectl apply -f grafana-service.yaml
+kubectl apply -f metrics-server-prometheus.deployment.yml
+kubectl apply -f Web-UI-dashboard-adminuser.yml
+kubectl apply -f Web-UI-newDeploy.yml
+kubectl apply -f Web-UI-newDeploy.yml
+kubectl get secrets
+kubectl get namespaces
+kubectl get secrets -n kube-system
+kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')
+kubectl get services -n kubernetes-dashboard
+kubectl apply -f Web-UI-dashboard-adminuser.yml -n  kubernetes-dashboard
+kubectl get services -n kubernetes-dashboard
 kubectl proxy
+CTL + C
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+kubectl get services -n kubernetes-dashboard
+kubectl proxy
+kubectl get secrets -n kubernetes-dashboard
+kubectl describe secret kubernetes-dashboard-certs -n kubernetes-dashboard
+kubectl describe secret kubernetes-dashboard -n kubernetes-dashboard
+kubectl get secrets -n kubernetes-dashboard -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='admin-user')].metadata.name}"
+kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')
+kubectl get secrets -n kubernetes-dashboard
+kubectl get serviceaccounts -n kubernetes-dashboard
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+kubectl get services -n kubernetes-dashboard
+kubectl get secrets -n kubernetes-dashboard -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='admin-user')].metadata.name}"
+kubectl describe secret kubernetes-dashboard-certs -n kubernetes-dashboard
+kubectl describe secret kubernetes-dashboard -n kubernetes-dashboard
+kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')
+kubectl get secrets -n kubernetes-dashboard
+kubectl get serviceaccounts -n kubernetes-dashboard
+nano admin-user-token.yaml
+ ```
+# Créez un fichier YAML nommé `admin-user-token.yaml` avec le contenu suivant :
+   ```yaml
+   apiVersion: v1
+   kind: Secret
+   metadata:
+     name: admin-user-token
+     annotations:
+       kubernetes.io/service-account.name: "admin-user"
+     namespace: kubernetes-dashboard
+   type: kubernetes.io/service-account-token
+   ```
+
+# Appliquer le YAML :
+   ```bash
+   kubectl apply -f admin-user-token.yaml
+   kubectl get secrets -n kubernetes-dashboard
+   kubectl describe secret admin-user-token -n kubernetes-dashboard
+   ```
+
+# Décoder le Token
+
+```bash
+echo '[token-encodé-en-base64]' | base64 --decode
+```
+
+- Remplacez `[token-encodé-en-base64]` par le token récupéré.
+- Ce token décodé pourra être utilisé pour se connecter au Dashboard de Kubernetes.
+
+# Résumé
+
+```bash
 nano admin-user-token.yaml
 kubectl apply -f admin-user-token.yaml
 kubectl get secrets -n kubernetes-dashboard
 kubectl describe secret admin-user-token -n kubernetes-dashboard
 echo '[base64-encoded-token]' | base64 --decode
-minikube service grafana --url -n monitoring
-kubectl proxy --address='0.0.0.0' --accept-hosts='^*$'
-kubectl get all -A
 ```
 
-Ce script contient toutes les commandes nécessaires pour configurer les outils et services mentionnés dans le tutoriel, sans aucun commentaire pour une exécution directe.
+# Récupérez le token
+```bash
+echo '[base64-encoded-token]' | base64 --decode
+echo 'token' | cut -d"." -f2 | base64 -d
+echo 'token' | base64 --decode
+```
+
+## Affichez le premier tableau de bord
+```bash
+kubectl proxy
+kubectl proxy --address='0.0.0.0' --accept-hosts='^*$'
+kubectl get all -A
+kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')
+kubectl proxy
+kubectl proxy --address='0.0.0.0' --accept-hosts='^*$' 
+   ```
+
+# 3. Accédez au tableau de bord à partir de votre navigateur :
+   ```
+http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
+   ```
+# Étape 5 : Accès à Grafana
+```bash
+minikube service grafana --url -n monitoring
+```
+Utilisez l'URL fournie pour accéder à Grafana. Les identifiants par défaut sont généralement "admin" pour le nom d'utilisateur et "admin" pour le mot de passe.
+
+### Étape 6 : Configuration de Prometheus comme source de données dans Grafana
+
+Suivez ces étapes dans l'interface utilisateur de Grafana pour configurer Prometheus comme source de données :
+
+1. Connectez-vous à Grafana.
+2. Allez dans **Configuration** -> **Data Sources**.
+3. Cliquez sur **Add data source**.
+4. Sélectionnez **Prometheus**.
+5. Configurez l'URL comme suit :
+   ```
+   http://prometheus:9090
+   ```
+## Correction de 5. :
+![image](https://github.com/user-attachments/assets/2a294419-f724-47ff-a4f6-3ad97f44a3f3)
+
+
+
