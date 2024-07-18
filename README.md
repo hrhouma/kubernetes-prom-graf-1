@@ -456,6 +456,12 @@ kubectl create namespace kubernetes-dashboard
 kubectl apply -f *.yml
 kubectl apply -f *.yaml
 ```
+ou
+```bash
+for file in *.yaml; do
+    kubectl apply -f "$file"
+done
+```
 
 # Méthode 2
 - Pour appliquer ces fichiers à l'aide de `kubectl`, vous pouvez spécifier chaque fichier individuellement comme suit :
