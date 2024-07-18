@@ -1,7 +1,7 @@
 
 ```bash
-ssh eleve@10.0.2.18
-ssh eleve@10.0.2.15
+su
+apt install openssh-server
 ssh eleve@172.28.128.4
 su
 apt install git -y
