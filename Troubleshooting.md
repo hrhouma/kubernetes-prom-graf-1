@@ -1,4 +1,40 @@
-# Troubleshooting 2
+# Troubleshooting 
+### http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
+![image](https://github.com/user-attachments/assets/c29a6866-4a73-4522-b43a-c375479c0698)
+
+L'erreur que vous voyez indique que le service "kubernetes-dashboard" n'est pas trouvé dans le namespace "kube-system". Cela peut arriver si le tableau de bord de Kubernetes n'a pas été installé correctement ou s'il a été *installé dans un autre namespace*.
+
+- Pour résoudre ce problème :
+
+1. **Vérifier si le Dashboard est installé** :
+   - Utilisez cette commande pour voir si le Dashboard est installé dans n'importe quel namespace :
+     ```bash
+     kubectl get services --all-namespaces | grep kubernetes-dashboard
+     ```
+
+2. **Vérifier le Namespace** :
+   - Si le Dashboard est installé mais pas dans "kube-system", vous devrez ajuster l'URL pour utiliser le bon namespace. Par exemple, si le Dashboard est dans "kubernetes-dashboard", l'URL devrait être :
+     ```
+     http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+     ```
+
+3. **Réinstaller le Dashboard** :
+   - Si le Dashboard n'est pas installé, vous pouvez l'installer en utilisant la commande suivante :
+     ```bash
+     kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+     ```
+
+4. **Vérifier les logs du pod du Dashboard** :
+   - Si le Dashboard est installé mais ne fonctionne pas correctement, vérifiez les logs pour plus d'informations :
+     ```bash
+     kubectl logs <nom_du_pod_dashboard> -n <namespace_du_dashboard>
+     ```
+   - Remplacez `<nom_du_pod_dashboard>` et `<namespace_du_dashboard>` par les valeurs appropriées que vous pouvez trouver en utilisant `kubectl get pods --all-namespaces`.
+
+Ces étapes devraient vous aider à diagnostiquer et à résoudre le problème avec l'accès au Dashboard de Kubernetes.
+
+
+# Troubleshooting 2 - Dashboard non visible
 
 ### Étape 1 : Vérification du déploiement du Kubernetes Dashboard
 
