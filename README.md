@@ -578,6 +578,10 @@ kubectl proxy --address='0.0.0.0' --accept-hosts='^*$'
    ```
 http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
    ```
+ou
+   ```
+http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+   ```
 # Étape 5 : Accès à Grafana
 ```bash
 minikube service grafana --url -n monitoring
