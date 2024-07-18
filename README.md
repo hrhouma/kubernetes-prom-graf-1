@@ -323,3 +323,134 @@ Suivez ces étapes dans l'interface utilisateur de Grafana pour configurer Prome
 
 Cette approche vous permet de mettre en œuvre un système de surveillance de votre cluster Kubernetes en utilisant les fichiers spécifiques que vous avez fournis, plutôt que de dépendre de clones de dépôts externes.
 
+
+
+---
+🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇
+# ANNEXE 1
+🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇
+
+```bash
+# Installation de OpenSSH Server
+su
+apt update
+apt install openssh-server
+
+# Vérification du statut du service SSH
+sudo systemctl status ssh
+# Ou pour les systèmes utilisant encore SysVinit
+sudo service ssh status
+
+# Connexion SSH
+ssh votre_utilisateur@adresse_ip_host_only
+
+# Ajouter l'utilisateur 'eleve' aux sudoers sans demande de mot de passe
+su
+echo "eleve ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/eleve
+
+# Se connecter en tant qu'utilisateur 'eleve'
+su - eleve
+
+# Installation de Docker et configuration
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl gnupg lsb-release
+
+sudo mkdir -p /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+sudo usermod -aG docker eleve
+
+# Installation et démarrage de Minikube
+sudo apt update
+sudo apt install -y curl wget apt-transport-https
+
+sudo curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+sudo wget https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubectl
+sudo chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+
+sudo usermod -aG docker $USER && newgrp docker
+
+minikube start --driver=docker
+
+# Vérification de l'installation de Minikube
+kubectl cluster-info
+minikube status
+
+# Gestion des déploiements Kubernetes et accès au Dashboard
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+kubectl proxy
+
+# Création et gestion de secrets
+nano admin-user-token.yaml
+kubectl apply -f admin-user-token.yaml
+kubectl get secrets -n kubernetes-dashboard
+kubectl describe secret admin-user-token -n kubernetes-dashboard
+echo '[base64-encoded-token]' | base64 --decode
+
+# Accès à Grafana
+minikube service grafana --url -n monitoring
+
+# Lancement du proxy Kubernetes pour accéder aux tableaux de bord
+kubectl proxy --address='0.0.0.0' --accept-hosts='^*$'
+
+# Vérification des déploiements et services dans Kubernetes
+kubectl get all -A
+```
+
+
+
+---
+🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇
+# ANNEXE 2
+🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇🥇
+
+```bash
+su
+apt update
+apt install openssh-server
+sudo systemctl status ssh
+sudo service ssh status
+ssh votre_utilisateur@adresse_ip_host_only
+su
+echo "eleve ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/eleve
+su - eleve
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl gnupg lsb-release
+sudo mkdir -p /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo usermod -aG docker eleve
+sudo apt update
+sudo apt install -y curl wget apt-transport-https
+sudo curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+sudo wget https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubectl
+sudo chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+sudo usermod -aG docker $USER && newgrp docker
+minikube start --driver=docker
+kubectl cluster-info
+minikube status
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+kubectl proxy
+nano admin-user-token.yaml
+kubectl apply -f admin-user-token.yaml
+kubectl get secrets -n kubernetes-dashboard
+kubectl describe secret admin-user-token -n kubernetes-dashboard
+echo '[base64-encoded-token]' | base64 --decode
+minikube service grafana --url -n monitoring
+kubectl proxy --address='0.0.0.0' --accept-hosts='^*$'
+kubectl get all -A
+```
+
+Ce script contient toutes les commandes nécessaires pour configurer les outils et services mentionnés dans le tutoriel, sans aucun commentaire pour une exécution directe.
