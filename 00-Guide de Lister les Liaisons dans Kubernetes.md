@@ -1,4 +1,4 @@
-# Guide de Lister les Liaisons dans Kubernetes
+# Lister les Liaisons dans Kubernetes
 
 Ce guide explique comment lister toutes les liaisons (`RoleBindings` et `ClusterRoleBindings`) dans un cluster Kubernetes. Les liaisons de rôles sont essentielles pour gérer les permissions des utilisateurs et des services dans Kubernetes.
 
