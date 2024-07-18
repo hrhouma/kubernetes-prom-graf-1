@@ -445,18 +445,37 @@ git clone https://github.com/hrhouma/kubernetes-prom-graf-1.git
 cd kubernetes-prom-graf-1/
 kubectl create namespace monitoring
 kubectl create namespace kubernetes-dashboard
-kubectl apply -f kube-state-metrics-service-account.yaml
-kubectl apply -f kube-state-metrics-cluster-role.yaml
-kubectl apply -f kube-state-metrics-cluster-role-binding.yaml
-kubectl apply -f kube-state-metrics-deployment.yaml
-kubectl apply -f kube-state-metrics-service.yaml
-kubectl apply -f grafana-configmap.yaml
-kubectl apply -f grafana-deployment.yaml
-kubectl apply -f grafana-service.yaml
-kubectl apply -f metrics-server-prometheus.deployment.yml
+```
+
+# Méthode 1
+- Si vous souhaitez appliquer tous les fichiers YAML dans le dossier (en supposant qu'ils sont tous compatibles et destinés à être appliqués ensemble), vous pouvez utiliser un joker `*` avec `kubectl apply -f` comme ceci :
+
+```bash
+kubectl apply -f *.yml
+```
+
+# Méthode 2
+Pour appliquer ces fichiers à l'aide de `kubectl`, vous pouvez spécifier chaque fichier individuellement comme suit :
+
+```bash
+kubectl apply -f Deployment-service.yml
+kubectl apply -f Deployment-deployment.yml
 kubectl apply -f Web-UI-dashboard-adminuser.yml
 kubectl apply -f Web-UI-newDeploy.yml
-kubectl apply -f Web-UI-newDeploy.yml
+kubectl apply -f admin-user-token.yml
+kubectl apply -f grafana-configmap.yml
+kubectl apply -f grafana-deployment.yml
+kubectl apply -f grafana-service.yml
+kubectl apply -f kube-state-metrics-cluster-role-binding.yml
+kubectl apply -f kube-state-metrics-cluster-role.yml
+kubectl apply -f kube-state-metrics-deployment.yml
+kubectl apply -f kube-state-metrics-service-account.yml
+kubectl apply -f kube-state-metrics-service.yml
+kubectl apply -f metrics-server-prometheus-deployment.yml
+```
+
+
+```bash
 kubectl get secrets
 kubectl get namespaces
 kubectl get secrets -n kube-system
